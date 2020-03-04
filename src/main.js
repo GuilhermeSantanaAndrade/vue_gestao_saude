@@ -3,23 +3,17 @@ import App from "./App.vue";
 import router from "./router";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
-import colors from "vuetify/es5/util/colors";
 
-Vue.use(Vuetify, {
-  theme: {
-    primary: "#2196F3",
-    secondary: colors.grey.darken1,
-    accent: colors.shades.black,
-    error: colors.red.accent3,
-    info: "#2196F3",
-    success: "#4CAF50",
-    warning: "#FFC107"
-  }
-});
+Vue.use(Vuetify);
+
+const opts = {};
+
+const vuetify = new Vuetify(opts);
 
 Vue.config.productionTip = false;
 
 new Vue({
   router,
+  vuetify,
   render: h => h(App)
 }).$mount("#app");
