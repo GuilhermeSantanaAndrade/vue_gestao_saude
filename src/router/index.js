@@ -12,21 +12,18 @@ const routes = [
   },
   {
     path: "/clientes",
-    name: "Clientes",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/ClienteConsulta.vue")
+    name: "ClientesConsultar",
+    component: () => import("../views/ClienteConsulta.vue")
   },
   {
     path: "/clientes/inserir",
-    name: "ClientesInserir",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Cliente.vue")
+    name: "ClienteInserir",
+    component: () => import("../views/Cliente.vue")
   },
   {
     path: "/clientes/:id/alterar",
-    name: "ClientesAlterar",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Cliente.vue")
+    name: "ClienteAlterar",
+    component: () => import("../views/Cliente.vue")
   }
 ];
 

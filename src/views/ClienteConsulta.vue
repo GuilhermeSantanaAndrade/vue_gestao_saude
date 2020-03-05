@@ -28,18 +28,18 @@
           :search="search"
           class="elevation-1"
         >
-          <template v-slot:item.name="{}">
+          <template v-slot:item.name="{ item }">
             <v-icon
               small
               color="blue darken-2"
-              @click="editItem(props.item)"
+              @click="editItem(item)"
               style="margin-right: 20px; cursor: pointer;"
               >edit</v-icon
             >
             <v-icon
               small
               color="red darken-2"
-              @click="deleteConfirmationMessage(props.item)"
+              @click="deleteConfirmationMessage(item)"
               style="margin-right: 20px; cursor: pointer;"
               >delete</v-icon
             >
@@ -49,7 +49,7 @@
         <v-btn
           class="v-btn v-btn--bottom v-btn--floating v-btn--fixed v-btn--right theme--dark blue darken-1"
           style="width: 65px; height:65px; font-size: 30px"
-          :to="{ name: 'Cliente' }"
+          :to="{ name: 'ClienteInserir' }"
           >+</v-btn
         >
       </v-flex>
@@ -58,7 +58,8 @@
 </template>
 
 <script>
-//import Vue from "vue";
+import Vue from "vue";
+import { api } from "../services/api.js";
 
 export default {
   data: () => ({
@@ -75,70 +76,35 @@ export default {
       { text: "CPF/CNPJ", value: "cpf" },
       { text: "Endereço", value: "endereco.logradouro" }
     ],
-    items: [
-      {
-        nome: "Guilherme Santana de Andrade",
-        cpf: "111.222.333-44",
-        rg: "47384512-9",
-        telefone: "(11) 97546543",
-        email: "guilherme_s_andrade@hotmail.com",
-        endereco: {
-          logradouro: "Rua teste",
-          numero: "55",
-          complemento: "casa 1",
-          bairro: "bairro teste",
-          cidade: "sao paulo",
-          estado: "",
-          cep: "03370-020",
-          uf: "SP"
-        },
-        id: 1
-      },
-      {
-        nome: "Guilherme Santana de Andrade",
-        cpf: "111.222.333-44",
-        rg: "47384512-9",
-        telefone: "(11) 97546543",
-        email: "guilherme_s_andrade@hotmail.com",
-        endereco: {
-          logradouro: "Rua teste",
-          numero: "55",
-          complemento: "casa 1",
-          bairro: "bairro teste",
-          cidade: "sao paulo",
-          estado: "",
-          cep: "03370-020",
-          uf: "SP"
-        },
-        id: 2
-      }
-    ],
+    items: [],
     editedIndex: -1,
-    selectedItem: {
-      nome: "",
-      cpf: "",
-      logradouro: "",
-      ativo: true
-    }
+    selectedItem: {}
   }),
   computed: {},
   created() {
     this.initialize();
   },
   methods: {
-    async list(/*params*/) {
+    async list(params) {
       try {
-        //debugger;
-        //const result = await api.get("/clientes", params);
-        //if (Array.isArray(result)) {
-        //  this.items = result.map(it => ({
-        //    guid: it.guid,
-        //    nome: it.nome,
-        //    cpf: funcoes.applyCNPJ_or_CPFMask(it.cpf_cnpj),
-        //    logradouro: it.endereco.logradouro,
-        //    ativo: it.ativo
-        //  }));
-        //}
+        const result = await api.get("/clientes", params);
+        if (Array.isArray(result)) {
+          this.items = result.map(it => ({
+            id: it.id,
+            nome: it.nome,
+            cpf: Vue.applyCNPJ_or_CPFMask(it.cpf),
+            endereco: {
+              logradouro: it.endereco.logradouro,
+              numero: "",
+              complemento: "",
+              bairro: "",
+              cidade: "",
+              estado: "",
+              cep: "",
+              uf: ""
+            }
+          }));
+        }
       } catch (error) {
         alert(error.toString(), "error");
       }
@@ -149,7 +115,7 @@ export default {
     editItem(item) {
       this.selectedItem = item;
       this.$router.push({
-        name: "Cliente",
+        name: "ClienteAlterar",
         params: { id: item.id }
       });
     },
@@ -161,15 +127,13 @@ export default {
     },
     async deleteItem() {
       this.deleteDialog = false;
-      //const index = this.items.indexOf(this.selectedItem);
+      const index = this.items.indexOf(this.selectedItem);
       try {
-        //const result = await guincheiro.deletar(this.selectedItem.guid);
-        //if (typeof result === "boolean" && result) {
-        //  this.items.splice(index, 1);
-        //  Vue.showMessage("Excluído com sucesso", "success");
-        //} else {
-        //  Vue.showMessage(result.toString(), "error");
+        /*const result = */ await api.delete("/clientes", this.selectedItem.id);
+        //if (result && result.status === "200") {
+        this.items.splice(index, 1);
         //}
+        alert("Excluído com sucesso!");
       } catch (error) {
         alert(error.toString(), "error");
       }

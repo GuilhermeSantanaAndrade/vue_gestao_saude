@@ -130,7 +130,7 @@
               </v-layout>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn :to="{ name: 'Home' }">Voltar</v-btn>
+                <v-btn :to="{ name: 'ClientesConsultar' }">Voltar</v-btn>
                 <v-btn @click="submit()" color="primary">Efetivar</v-btn>
               </v-card-actions>
             </v-container>
@@ -151,6 +151,7 @@ export default {
   },
   data() {
     return {
+      isAlteracao: false,
       customer: {
         nome: "",
         cpf: "",
@@ -175,12 +176,45 @@ export default {
       ]
     };
   },
+  created() {
+    this.initialize();
+  },
   methods: {
     async submit() {
       if (this.$refs.form.validate()) {
-        await api.post("/clientes", this.customer);
-        alert("Cliente cadastrado com sucesso!");
-        this.$router.push({ name: "Home" });
+        if (this.isAlteracao) {
+          await api.put(`/clientes/${this.customer.id}`, this.customer);
+          alert("Cliente alterado com sucesso!");
+        } else {
+          await api.post("/clientes", this.customer);
+          alert("Cliente cadastrado com sucesso!");
+        }
+        this.$router.push({ name: "ClientesConsultar" });
+      }
+    },
+    async initialize() {
+      if (this.$route.params.id) {
+        this.isAlteracao = true;
+        const result = await api.get("/clientes", {
+          id: this.$route.params.id
+        });
+        this.customer = result[0];
+      } else {
+        this.customer = {
+          nome: "",
+          cpf: "",
+          rg: "",
+          telefone: "",
+          email: "",
+          endereco: {
+            logradouro: "",
+            numero: "",
+            complemento: "",
+            bairro: "",
+            cidade: "",
+            estado: ""
+          }
+        };
       }
     }
   }
