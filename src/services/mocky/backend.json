@@ -1,0 +1,22 @@
+{
+  "clientes": [
+    {
+      "nome": "Guilherme Santana de Andrade",
+      "cpf": "111.222.333-44",
+      "rg": "47384512-9",
+      "telefone": "(11) 97546543",
+      "email": "guilherme_s_andrade@hotmail.com",
+      "endereco": {
+        "logradouro": "Rua teste",
+        "numero": "55",
+        "complemento": "casa 1",
+        "bairro": "bairro teste",
+        "cidade": "sao paulo",
+        "estado": "",
+        "cep": "03370-020",
+        "uf": "SP"
+      },
+      "id": 1
+    }
+  ]
+}

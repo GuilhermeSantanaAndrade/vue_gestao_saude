@@ -15,7 +15,7 @@
             <v-list-item-action>
               <v-icon>mdi-settings</v-icon>
             </v-list-item-action>
-            <v-list-item-content @click="navigate('Clientes')">
+            <v-list-item-content @click="navigate('ClientesConsulta')">
               <v-list-item-title>Clientes</v-list-item-title>
             </v-list-item-content>
           </v-list-item>

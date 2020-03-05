@@ -13,6 +13,7 @@
                 required
                 :maxlength="50"
                 v-model="customer.nome"
+                :rules="requiredField"
               ></v-text-field>
               <v-layout>
                 <v-flex xs12 md6>
@@ -20,7 +21,8 @@
                     label="CPF"
                     required
                     v-model="customer.cpf"
-                    mask="'###.###.###-##'"
+                    v-mask="'###.###.###-##'"
+                    :rules="requiredField"
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -30,6 +32,7 @@
                     label="RG"
                     :maxlength="20"
                     v-model="customer.rg"
+                    :rules="requiredField"
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -37,9 +40,10 @@
                 <v-flex xs12 md6>
                   <v-text-field
                     label="Telefone Principal"
-                    mask="(##) #########"
+                    v-mask="'(##) #########'"
                     required
                     v-model="customer.telefone"
+                    :rules="requiredField"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 md6>
@@ -48,6 +52,7 @@
                     :maxlength="50"
                     required
                     v-model="customer.email"
+                    :rules="emailRules"
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -58,9 +63,10 @@
                 <v-flex xs2 md2 sm2>
                   <v-text-field
                     label="CEP"
-                    mask="#####-###"
+                    v-mask="'#####-###'"
                     required
                     v-model="customer.endereco.cep"
+                    :rules="requiredField"
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -98,6 +104,7 @@
                     :maxlength="50"
                     required
                     v-model="customer.endereco.bairro"
+                    :rules="requiredField"
                   ></v-text-field>
                 </v-flex>
               </v-layout>
@@ -108,6 +115,7 @@
                     :maxlength="50"
                     required
                     v-model="customer.endereco.cidade"
+                    :rules="requiredField"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 md4>
@@ -116,9 +124,15 @@
                     :maxlength="2"
                     required
                     v-model="customer.endereco.uf"
+                    :rules="requiredField"
                   ></v-text-field>
                 </v-flex>
               </v-layout>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn :to="{ name: 'Home' }">Voltar</v-btn>
+                <v-btn @click="submit()" color="primary">Efetivar</v-btn>
+              </v-card-actions>
             </v-container>
           </v-form>
         </v-flex>
@@ -128,7 +142,13 @@
 </template>
 
 <script>
+import { mask } from "vue-the-mask";
+import { api } from "../services/api";
+
 export default {
+  directives: {
+    mask
+  },
   data() {
     return {
       customer: {
@@ -145,8 +165,24 @@ export default {
           cidade: "",
           estado: ""
         }
-      }
+      },
+      requiredField: [v => !!v || "Campo obrigatório"],
+      emailRules: [
+        v => !!v || "Campo obrigatório",
+        v =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "E-mail inválido"
+      ]
     };
+  },
+  methods: {
+    async submit() {
+      if (this.$refs.form.validate()) {
+        await api.post("/clientes", this.customer);
+        alert("Cliente cadastrado com sucesso!");
+        this.$router.push({ name: "Home" });
+      }
+    }
   }
 };
 </script>
