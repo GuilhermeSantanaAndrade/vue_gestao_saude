@@ -155,6 +155,7 @@ export default {
         telefone: "",
         email: "",
         endereco: {
+          cep: "",
           logradouro: "",
           numero: "",
           complemento: "",
@@ -206,6 +207,7 @@ export default {
           telefone: "",
           email: "",
           endereco: {
+            cep: "",
             logradouro: "",
             numero: "",
             complemento: "",
