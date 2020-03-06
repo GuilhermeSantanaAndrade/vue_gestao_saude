@@ -197,8 +197,6 @@ export default {
       if (this.$route.params.id) {
         this.isAlteracao = true;
         const result = await api.get(`/clientes/${this.$route.params.id}`);
-        console.log(result);
-        console.log(result.data[0]);
         this.customer = result.data[0];
       } else {
         this.customer = {
