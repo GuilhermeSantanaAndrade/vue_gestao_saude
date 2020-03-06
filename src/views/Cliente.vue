@@ -5,9 +5,7 @@
         <v-flex xs12>
           <v-form ref="form" lazy-validation>
             <v-container>
-              <v-subheader style="padding-left: 0px; font-weight: bold;"
-                >Dados</v-subheader
-              >
+              <v-subheader style="padding-left: 0px; font-weight: bold;">Dados</v-subheader>
               <v-text-field
                 label="Nome"
                 required
@@ -56,9 +54,7 @@
                   ></v-text-field>
                 </v-flex>
               </v-layout>
-              <v-subheader style="padding-left: 0px; font-weight: bold;"
-                >Endereço</v-subheader
-              >
+              <v-subheader style="padding-left: 0px; font-weight: bold;">Endereço</v-subheader>
               <v-layout>
                 <v-flex xs2 md2 sm2>
                   <v-text-field
@@ -164,7 +160,7 @@ export default {
           complemento: "",
           bairro: "",
           cidade: "",
-          estado: ""
+          uf: ""
         }
       },
       requiredField: [v => !!v || "Campo obrigatório"],
@@ -182,12 +178,17 @@ export default {
   methods: {
     async submit() {
       if (this.$refs.form.validate()) {
-        if (this.isAlteracao) {
-          await api.put(`/clientes/${this.customer.id}`, this.customer);
-          alert("Cliente alterado com sucesso!");
-        } else {
-          await api.post("/clientes", this.customer);
-          alert("Cliente cadastrado com sucesso!");
+        try {
+          if (this.isAlteracao) {
+            await api.put(`/clientes/${this.customer.id}`, this.customer);
+            alert("Cliente alterado com sucesso!");
+          } else {
+            await api.post("/clientes", this.customer);
+            alert("Cliente cadastrado com sucesso!");
+          }
+        } catch (error) {
+          alert(error);
+          throw error;
         }
         this.$router.push({ name: "ClientesConsultar" });
       }
@@ -195,10 +196,10 @@ export default {
     async initialize() {
       if (this.$route.params.id) {
         this.isAlteracao = true;
-        const result = await api.get("/clientes", {
-          id: this.$route.params.id
-        });
-        this.customer = result[0];
+        const result = await api.get(`/clientes/${this.$route.params.id}`);
+        console.log(result);
+        console.log(result.data[0]);
+        this.customer = result.data[0];
       } else {
         this.customer = {
           nome: "",
@@ -212,7 +213,7 @@ export default {
             complemento: "",
             bairro: "",
             cidade: "",
-            estado: ""
+            uf: ""
           }
         };
       }
